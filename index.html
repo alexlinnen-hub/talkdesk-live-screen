@@ -101,16 +101,19 @@
     }
 
     document.getElementById('td-embedded-iframe').addEventListener('load', function () {
-      sendEventToTD('init_td_embedded', {
-        url: window.location.origin,
-        int: 'custom-integration',
-        env: 'prd-eu',
-        acc: 'warrantywise',
-        aid: 'agent-id-123',
-        view: 'headless',
-        app: 'live',
-        show_cti_status: 'false'
-      });
+      // Wait 2 seconds after iframe loads to give Talkdesk time to initialise
+      setTimeout(function() {
+        sendEventToTD('init_td_embedded', {
+          url: window.location.origin,
+          int: 'custom-integration',
+          env: 'prd-eu',
+          acc: 'warrantywise',
+          aid: 'agent-id-123',
+          view: 'headless',
+          app: 'live',
+          show_cti_status: 'false'
+        });
+      }, 2000);
     });
   </script>
 
