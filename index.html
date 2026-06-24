@@ -58,7 +58,7 @@
       overflow: hidden;
     }
 
-    #td-embedded-iframe {
+    #td-emb-container {
       width: 100%;
       height: 100%;
       border: none;
@@ -76,10 +76,11 @@
 
   <div class="embed-container">
     <iframe
-      id="td-embedded-iframe"
+      id="td-emb-container"
+      title="Talkdesk Embedded"
       src="https://prd-cdn-talkdesk.talkdesk.com/talkdesk-embedded/latest/generic/index.html"
-      allow="microphone; camera"
-      title="Talkdesk Live"
+      allow="microphone *"
+      frameborder="0"
     ></iframe>
   </div>
 
@@ -92,29 +93,34 @@
     updateClock();
     setInterval(updateClock, 1000);
 
-    // Talkdesk Embedded init
-    function sendEventToTD(event, data) {
-      const iframe = document.getElementById('td-embedded-iframe');
-      if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.postMessage({ event, data }, '*');
-      }
-    }
+    // Talkdesk Embedded — exactly as per docs
+    const sendEventToTD = (action, data) => {
+      let tdEmbContainer = document.getElementById('td-emb-container');
+      tdEmbContainer.contentWindow.postMessage({ action, data }, tdEmbContainer.src);
+    };
 
-    document.getElementById('td-embedded-iframe').addEventListener('load', function () {
-      // Wait 2 seconds after iframe loads to give Talkdesk time to initialise
-      setTimeout(function() {
-        sendEventToTD('init_td_embedded', {
-          url: window.location.origin,
-          int: 'custom-integration',
-          env: 'prd-eu',
-          acc: 'warrantywise',
-          aid: 'agent-id-123',
-          view: 'headless',
-          app: 'live',
-          show_cti_status: 'false'
-        });
-      }, 2000);
-    });
+    const eventHandler = (event) => {
+      let tdEmbContainer = document.getElementById('td-emb-container');
+      if (event.origin !== new URL(tdEmbContainer.src).origin) {
+        return;
+      }
+      console.log("### [custom integration] <<< event received:", event);
+    };
+
+    window.onload = () => {
+      window.addEventListener('message', eventHandler);
+
+      sendEventToTD('init_td_embedded', {
+        url: window.location.origin,
+        int: 'custom-integration',
+        env: 'prd-eu',
+        acc: 'warrantywise',
+        aid: 'agent-id-123',
+        view: 'headless',
+        app: 'live',
+        show_cti_status: 'false'
+      });
+    };
   </script>
 
 </body>
