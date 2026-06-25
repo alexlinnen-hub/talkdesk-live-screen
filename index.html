@@ -6,7 +6,6 @@
   <title>Live Queue — Warrantywise</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: #0d1117;
       color: #e6edf3;
@@ -15,7 +14,6 @@
       display: flex;
       flex-direction: column;
     }
-
     header {
       display: flex;
       align-items: center;
@@ -25,7 +23,6 @@
       border-bottom: 1px solid #30363d;
       flex-shrink: 0;
     }
-
     .status-dot {
       width: 10px;
       height: 10px;
@@ -34,42 +31,32 @@
       box-shadow: 0 0 6px #3fb950;
       animation: pulse 2s infinite;
     }
-
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
-
     header h1 {
       font-size: 15px;
       font-weight: 600;
       letter-spacing: 0.3px;
       color: #e6edf3;
     }
-
     header span {
       margin-left: auto;
       font-size: 12px;
       color: #8b949e;
     }
-
     .panels {
       flex: 1;
       display: flex;
       overflow: hidden;
     }
-
     .panel {
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
     }
-
-    .panel + .panel {
-      border-left: 2px solid #30363d;
-    }
-
     .panel-label {
       font-size: 11px;
       font-weight: 600;
@@ -81,7 +68,6 @@
       border-bottom: 1px solid #30363d;
       flex-shrink: 0;
     }
-
     iframe {
       flex: 1;
       width: 100%;
@@ -91,15 +77,12 @@
   </style>
 </head>
 <body>
-
   <header>
     <div class="status-dot"></div>
     <h1>Live Queue · Warrantywise</h1>
     <span id="clock"></span>
   </header>
-
   <div class="panels">
-
     <div class="panel">
       <div class="panel-label">Live Dashboard</div>
       <iframe
@@ -110,20 +93,7 @@
         frameborder="0"
       ></iframe>
     </div>
-
-    <div class="panel">
-      <div class="panel-label">Puzzel</div>
-      <iframe
-        id="puzzel-container"
-        title="Puzzel"
-        src="https://puzzle-test.revopci.co.uk/"
-        allow="microphone *"
-        frameborder="0"
-      ></iframe>
-    </div>
-
   </div>
-
   <script>
     // Clock
     function updateClock() {
@@ -132,13 +102,11 @@
     }
     updateClock();
     setInterval(updateClock, 1000);
-
     // Talkdesk Embedded
     const sendEventToTD = (action, data) => {
       let tdEmbContainer = document.getElementById('td-emb-container');
       tdEmbContainer.contentWindow.postMessage({ action, data }, tdEmbContainer.src);
     };
-
     const eventHandler = (event) => {
       let tdEmbContainer = document.getElementById('td-emb-container');
       if (event.origin !== new URL(tdEmbContainer.src).origin) {
@@ -146,10 +114,8 @@
       }
       console.log("### [custom integration] <<< event received:", event);
     };
-
     window.onload = () => {
       window.addEventListener('message', eventHandler);
-
       sendEventToTD('init_td_embedded', {
         url: window.location.origin,
         int: 'custom-integration',
@@ -162,6 +128,5 @@
       });
     };
   </script>
-
 </body>
 </html>
